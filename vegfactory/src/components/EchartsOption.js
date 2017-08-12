@@ -2,26 +2,45 @@ import echarts from 'echarts';
 import moment from 'moment';
 import {observable, computed, action} from 'mobx';
 import {toJS} from 'mobx';
+import $ from 'jquery';
 
 class EchartsOption{
-  @observable simData = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable simdataDate = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable tempData = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable lightData = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable co2Data = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable waterData = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable time = ['','','','','','','','','','','','','','','','','','','',''];
   @observable lightIntensity = 20;
   @observable selectCity = '广东';
+
   @computed get randomData() {
     return {
       name: new Date(),
       value: [
         moment().format("YYYY/MM/DD HH:mm:ss"),
-        10 + Math.random() * 10
+        (
+          function(){
+            let result;
+            $.ajax({
+              url: '/api/charts',
+              type: 'GET',
+              dataType: 'json',
+              async: false,
+              success : function(data){
+                result = data;
+              }
+            });
+            return result
+          }
+        )()
       ]
     }
   }
   @computed get Options() {
     return {
-      monitor1:{
+      temp:{
         title: {
-          text: '动态数据 + 时间坐标轴'
+          text: '温度'
         },
         tooltip: {
             trigger: 'axis',
@@ -33,7 +52,7 @@ class EchartsOption{
             }
         },
         xAxis: {
-          data: toJS(this.simdataDate),
+          data: toJS(this.time),
           splitLine: {
             show: false
           }
@@ -46,7 +65,7 @@ class EchartsOption{
           }
         },
         series: [{
-          data: toJS(this.simData),
+          data: toJS(this.tempData),
           type: 'scatter',
           symbolSize: function (data) {
             return data/2;
@@ -76,9 +95,9 @@ class EchartsOption{
           }
         }]
       },
-      monitor2:{
+      light:{
         title: {
-          text: '柱状图动画延迟'
+          text: '光照强度'
         },
         tooltip: {
             trigger: 'axis',
@@ -90,7 +109,7 @@ class EchartsOption{
             }
         },
         xAxis: {
-          data: toJS(this.simdataDate),
+          data: toJS(this.time),
           silent: false,
           splitLine: {
             show: false
@@ -101,7 +120,7 @@ class EchartsOption{
         series: [{
           name: '值',
           type: 'bar',
-          data: toJS(this.simData),
+          data: toJS(this.lightData),
           animationDelay: function (idx) {
             return idx;
           }

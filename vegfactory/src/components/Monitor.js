@@ -8,23 +8,24 @@ import {toJS} from 'mobx';
 class Monitor extends Component {
   componentDidMount(){
     let Options = new EchartsOption();
-    let data = Options.simData;
-    let dataDate = Options.simdataDate;
-    let randomData = Options.randomData;
+    let tempData = Options.tempData;
+    let lightData = Options.lightData;
+    let time = Options.time;
     let myChart1 = echarts.init(this.main1);
     let myChart2 = echarts.init(this.main2);
-    console.log(toJS(Options.simdataDate));
-    myChart1.setOption(toJS(Options.Options.monitor1));
-    myChart2.setOption(toJS(Options.Options.monitor2));
+    myChart1.setOption(toJS(Options.Options.temp));
+    myChart2.setOption(toJS(Options.Options.light));
     setInterval(function () {
       for (var i = 0; i < 1; i++) {
-          data.shift();
-          data.push(toJS(Options.randomData.value[1]));
-          dataDate.shift();
-          dataDate.push(toJS(Options.randomData.value[0]));
+          tempData.shift();
+          tempData.push(toJS(Options.randomData.value[1]).temp);
+          lightData.shift();
+          lightData.push(toJS(Options.randomData.value[1]).light);
+          time.shift();
+          time.push(toJS(Options.randomData.value[0]));
       }
-      myChart1.setOption(toJS(Options.Options.monitor1));
-      myChart2.setOption(toJS(Options.Options.monitor2));
+      myChart1.setOption(toJS(Options.Options.temp));
+      myChart2.setOption(toJS(Options.Options.light));
     }, 1000);
   }
   render(){

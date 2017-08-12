@@ -18,19 +18,30 @@ const COLUMNS = [
   "kcal",
   "description"
 ];
-app.get("/api",(req,res) => {
-  const param = req.query.q;
-  if(!param) {
-    res.json({
-      req:req.query.q,
-      error:"Miss parameter `q`"
-    });
-    return;
-  }
+app.get("/api/charts",(req,res) => {
+  const param = req.query.charts;
+  // if(!param) {
+  //   res.json({
+  //     req:req.query.q,
+  //     error:"Miss parameter `charts`"
+  //   });
+  //   return;
+  // }
   res.json({
-    req:req.query.q + "aa"
+    temp:10 + Math.random()*10,
+    light:10 + Math.random()*10,
+    co2:10 + Math.random()*10,
+    water:10 + Math.random()*10
   });
 });
+app.route('/login')
+	.get(function(req, res) {
+		res.send('this is the login form');
+	})
+	.post(function(req, res) {
+		console.log('processing');
+		res.send('processing the login form!');
+	});
 
 app.listen(app.get("port"),() =>{
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);

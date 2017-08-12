@@ -8,6 +8,7 @@ import Lightcontrol from './components/Lightcontrol';
 import Record from './components/Record';
 import History from './components/History';
 import Onekey from './components/Onekey';
+import $ from 'jquery';
 
 const {Header, Content, Footer, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
