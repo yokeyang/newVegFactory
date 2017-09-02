@@ -1,26 +1,38 @@
 import React, {Component} from 'react';
 import Swiper from 'swiper';
 import { Card,Table, Button } from 'antd';
-import reqwest from 'reqwest';
 import '../App.css';
+import $ from 'jquery';
 
 const columns = [{
-  title: 'Name',
-  dataIndex: 'name',
-  sorter: true,
-  render: name => `${name.first} ${name.last}`,
-  width: '20%',
+  title: '日期',
+  dataIndex: 'time',
+  width: '20%'
 }, {
-  title: 'Gender',
-  dataIndex: 'gender',
-  filters: [
-    { text: 'Male', value: 'male' },
-    { text: 'Female', value: 'female' },
-  ],
+  title: '操作装置',
+  dataIndex: 'machine',
   width: '20%',
+  filters: [{
+    text: '灯光',
+    value: 'light',
+    children:[{
+      text:'红光',
+      value:'红光'
+    },{
+      text:'蓝光',
+      value:'蓝光'
+    },{
+      text:'绿光',
+      value:'绿光'
+    },{
+      text:'紫光',
+      value:'紫光'
+    }]
+  }],
+  onFilter: (value, record) => record.machine.indexOf(value) === 0,
 }, {
-  title: 'Email',
-  dataIndex: 'email',
+  title: '操作',
+  dataIndex: 'action',
 }];
 
 class Record extends Component{
@@ -39,45 +51,49 @@ class Record extends Component{
       pagination: pager,
     });
     this.fetch({
-      results: pagination.pageSize,
       page: pagination.current,
-      sortField: sorter.field,
-      sortOrder: sorter.order,
-      ...filters,
     });
   }
   fetch = (params = {}) => {
-    console.log(params)
-    this.setState({ loading: true });
-    reqwest({
-      url: 'https://randomuser.me/api',
-      method: 'get',
+    this.setState({ loading: true })
+    const _this = this
+    $.ajax({
+      url: '/api/history',
+      type: 'GET',
+      dataType: 'json',
       data: {
-        results: 10,
-        ...params,
-      },
-      type: 'json',
-    }).then((data) => {
-      const pagination = { ...this.state.pagination };
+        results: 20,
+        ...params
+      }
+    })
+    .done(function(data) {
+      const pagination = { ..._this.state.pagination };
       // Read total count from server
       // pagination.total = data.totalCount;
-      console.log(pagination);
-      pagination.total = 20;
-      this.setState({
+      pagination.total = 20
+      _this.setState({
         loading: false,
-        data: data.results,
+        data: data.result,
         pagination,
       });
-    });
+    })
+    .fail(function() {
+      console.log("error");
+    })
   }
   componentDidMount(){
-    this.fetch();
+    this.fetch()
+    const _this = this
     new Swiper('.swiper-container', {
         nextButton: '.swiper-button-next',
         prevButton: '.swiper-button-prev',
         slidesPerView: 1,
         spaceBetween: 30,
-        loop: true
+        loop: true,
+        onSlideChangeEnd: function(swiper){
+          console.log(1)
+          _this.fetch()
+        }
     });
   }
   render(){
@@ -87,9 +103,8 @@ class Record extends Component{
             <div className="swiper-slide">
               <Card title="Tom" bordered={false} style={{ width: '90%' }}>
                 <Table columns={columns}
-                  rowKey={record => record.registered}
+                  key={1}
                   dataSource={this.state.data}
-                  pagination={this.state.pagination}
                   loading={this.state.loading}
                   onChange={this.handleTableChange}
                 />
@@ -98,9 +113,8 @@ class Record extends Component{
             <div className="swiper-slide">
               <Card title="Jerry" bordered={false} style={{ width: '90%' }}>
                 <Table columns={columns}
-                  rowKey={record => record.registered}
+                  key={2}
                   dataSource={this.state.data}
-                  pagination={this.state.pagination}
                   loading={this.state.loading}
                   onChange={this.handleTableChange}
                 />
@@ -109,20 +123,8 @@ class Record extends Component{
             <div className="swiper-slide">
               <Card title="Bob" bordered={false} style={{ width: '90%' }}>
                 <Table columns={columns}
-                  rowKey={record => record.registered}
+                  key={3}
                   dataSource={this.state.data}
-                  pagination={this.state.pagination}
-                  loading={this.state.loading}
-                  onChange={this.handleTableChange}
-                />
-              </Card>
-            </div>
-            <div className="swiper-slide">
-              <Card title="Raul" bordered={false} style={{ width: '90%' }}>
-                <Table columns={columns}
-                  rowKey={record => record.registered}
-                  dataSource={this.state.data}
-                  pagination={this.state.pagination}
                   loading={this.state.loading}
                   onChange={this.handleTableChange}
                 />
@@ -136,3 +138,41 @@ class Record extends Component{
   }
 };
 export default Record;
+// handleTableChange = (pagination, filters, sorter) => {
+//   const pager = { ...this.state.pagination };
+//   pager.current = pagination.current;
+//   this.setState({
+//     pagination: pager,
+//   });
+//   this.fetch({
+//     results: pagination.pageSize,
+//     page: pagination.current,
+//     sortField: sorter.field,
+//     sortOrder: sorter.order,
+//     ...filters,
+//   });
+// }
+// fetch = (params = {}) => {
+//   console.log(params)
+//   this.setState({ loading: true });
+//   reqwest({
+//     url: 'https://randomuser.me/api',
+//     method: 'get',
+//     data: {
+//       results: 10,
+//       ...params,
+//     },
+//     type: 'json',
+//   }).then((data) => {
+//     const pagination = { ...this.state.pagination };
+//     // Read total count from server
+//     // pagination.total = data.totalCount;
+//     console.log(data.results);
+//     pagination.total = 20;
+//     this.setState({
+//       loading: false,
+//       data: data.results,
+//       pagination,
+//     });
+//   });
+// }

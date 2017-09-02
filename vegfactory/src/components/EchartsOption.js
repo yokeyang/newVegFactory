@@ -10,7 +10,8 @@ class EchartsOption{
   @observable co2Data = ['','','','','','','','','','','','','','','','','','','',''];
   @observable waterData = ['','','','','','','','','','','','','','','','','','','',''];
   @observable time = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable lightIntensity = 20;
+  @observable lightIntensity = {red:20,blue:30,green:40,purple:50};//光照
+  @observable length = 20;
   @observable selectCity = '广东';
 
   @computed get randomData() {
@@ -145,7 +146,7 @@ class EchartsOption{
             endAngle: -45,
             center: ['15%', '40%'],
             detail: {formatter:'{value}%'},
-            data: [{value: this.lightIntensity, name: '强度'}],
+            data: [{value: this.lightIntensity.red, name: '强度'}],
             axisLine:{
               show:true,
               lineStyle:{
@@ -179,7 +180,7 @@ class EchartsOption{
             endAngle: 45,
             center: ['40%', '40%'],
             detail: {formatter:'{value}%'},
-            data: [{value: this.lightIntensity, name: '强度'}],
+            data: [{value: this.lightIntensity.blue, name: '强度'}],
             axisLine:{
               show:true,
               lineStyle:{
@@ -214,7 +215,7 @@ class EchartsOption{
             endAngle:-45,
             center: ['63%', '40%'],
             detail: {formatter:'{value}%'},
-            data: [{value: this.lightIntensity, name: '强度'}],
+            data: [{value: this.lightIntensity.green, name: '强度'}],
             axisLine:{
               show:true,
               lineStyle:{
@@ -248,7 +249,7 @@ class EchartsOption{
             endAngle:45,
             center: ['90%', '40%'],
             detail: {formatter:'{value}%'},
-            data: [{value: this.lightIntensity, name: '强度'}],
+            data: [{value: this.lightIntensity.purple, name: '强度'}],
             axisLine:{
               show:true,
               lineStyle:{
@@ -295,8 +296,20 @@ class EchartsOption{
       }
     }
   }
-  @action changelightIntensity(value){
-    this.lightIntensity = value
+  @action.bound getlightIntensity(){
+    let _this = this
+    $.ajax({
+      url: '/api/lightIntensity',
+      type: 'GET',
+      dataType: 'json',
+      async:false,
+    })
+    .done(function(e) {
+      _this.lightIntensity = e
+    })
+    .fail(function() {
+      console.log("error");
+    })
   }
 }
 
