@@ -1,7 +1,7 @@
 //nodejs offer apis
 const express = require("express");
 const fs = require("fs");
-
+const moment = require('moment');
 const app = express();
 
 app.set("port", process.env.PORT || 3001);
@@ -42,7 +42,7 @@ app.get("/api/lightIntensity",(req,res) => {
     purple:parseInt(Math.random()*10)*10
   })
 })
-app.get("/api/history",(req,res) => {
+app.get("/api/record",(req,res) => {
   if(!req.query.results){
     res.json({error:'no param results'})
     return
@@ -61,6 +61,16 @@ app.get("/api/history",(req,res) => {
     result:data
   })
 });
+app.get("/api/history",(req,res) => {
+  let data = []
+  for(let i = Date.now();i > Date.now() - 30 * 86400000;i-=86400000){
+    data.push({
+      date:moment(i).format('YYYY-MM-DD'),
+      
+    })
+  }
+  res.json({result:data})
+})
 app.get("/api/onekey",(req,res) => {
   if(!req.query.location || !req.query.veg){
     res.json({

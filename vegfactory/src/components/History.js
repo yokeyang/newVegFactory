@@ -7,9 +7,11 @@ class History extends Component{
   constructor(props){
     super(props);
     this.state = {
-      value: moment('2017-07-12')
+      value: moment('2017-07-12'),
+      date:`${moment().format('YYYY-MM-DD')}`
     }
   }
+
   dayInfo = (date) => {
     let dayInfo = [
       {content:'最后操作的操作员',value:`Bob`},
@@ -70,6 +72,7 @@ class History extends Component{
     )
   }
   componentDidMount(){
+    console.log(this.state.date)
   }
   disabledDate=(current)=>{
     return current.valueOf() < Date.now() - 30 * 86400000 || current.valueOf() > Date.now();

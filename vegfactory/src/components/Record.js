@@ -58,7 +58,7 @@ class Record extends Component{
     this.setState({ loading: true })
     const _this = this
     $.ajax({
-      url: '/api/history',
+      url: '/api/record',
       type: 'GET',
       dataType: 'json',
       data: {
