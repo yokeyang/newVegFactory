@@ -1,4 +1,3 @@
-@import '~antd/dist/antd.css';
 @import "~swiper/dist/css/swiper.min.css";
 
 a{
@@ -15,15 +14,24 @@ a{
   font-size: 1.5em;
   overflow: hidden;
 }
-.Avatar{
+.head{
   display: -webkit-flex;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: reverse;
   justify-content: flex-start;
   align-items: center;
   background: #fff;
-  padding: 16px;
+  padding: 1rem;
 }
+
+.Avatar{
+  margin-left: auto;
+}
+
+.trigger{
+  font-size: 1.5rem;
+}
+
 .swiper-container {
     width: 100%;
     min-height: 80vh;

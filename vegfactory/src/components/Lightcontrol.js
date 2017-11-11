@@ -24,7 +24,7 @@ class Lightcontrol extends Component{
     let myChart = echarts.init(this.charts)
     Options.getlightIntensity();
     myChart.setOption(toJS(Options.Options.Lightcontrol))
-    setInterval(function () {
+    this.timer = setInterval(()=>{
       for (var i = 0; i < 1; i++) {
         Options.getlightIntensity();
       }
@@ -36,6 +36,9 @@ class Lightcontrol extends Component{
   }
   sliderChange = (sign,value) => {
     console.log(sign,value)
+  }
+  componentWillUnmount(){
+    clearInterval(this.timer)
   }
   render(){
     const marks = {

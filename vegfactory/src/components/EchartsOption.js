@@ -2,14 +2,15 @@ import echarts from 'echarts';
 import moment from 'moment';
 import {observable, computed, action} from 'mobx';
 import {toJS} from 'mobx';
-import $ from 'jquery';
+import io from 'socket.io-client';
+var socket = io.connect('http://localhost:3002');
 
 class EchartsOption{
-  @observable tempData = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable lightData = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable co2Data = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable waterData = ['','','','','','','','','','','','','','','','','','','',''];
-  @observable time = ['','','','','','','','','','','','','','','','','','','',''];
+  @observable tempData = new Array(20).fill(0);
+  @observable lightData = new Array(20).fill(0);
+  @observable co2Data = new Array(20);
+  @observable waterData = new Array(20);
+  @observable time = new Array(20).fill('');
   @observable lightIntensity = {red:20,blue:30,green:40,purple:50};//光照
   @observable length = 20;
   @observable selectCity = '广东';
@@ -22,16 +23,20 @@ class EchartsOption{
         (
           function(){
             let result;
-            $.ajax({
-              url: '/api/charts',
-              type: 'GET',
-              dataType: 'json',
-              async: false,
-              success : function(data){
-                result = data;
-              }
-            });
-            return result
+            // $.ajax({
+            //   url: '/api/charts',
+            //   type: 'GET',
+            //   dataType: 'json',
+            //   async: false,
+            //   success : function(data){
+            //     result = data;
+            //   }
+            // });
+            return {
+              temp:10 + Math.random()*10,
+              light:10 + Math.random()*10,
+              co2:10 + Math.random()*10,
+              water:10 + Math.random()*10}
           }
         )()
       ]
@@ -297,18 +302,11 @@ class EchartsOption{
     }
   }
   @action.bound getlightIntensity(){
-    let _this = this
-    $.ajax({
-      url: '/api/lightIntensity',
-      type: 'GET',
-      dataType: 'json',
-      async:false,
-    })
-    .done(function(e) {
-      _this.lightIntensity = e
-    })
-    .fail(function() {
-      console.log("error");
+    socket.emit('light','any')
+    socket.on('lightIntensity',(e)=>{
+      if(this.lightIntensity !== e){
+        this.lightIntensity = e
+      }
     })
   }
 }

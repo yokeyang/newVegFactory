@@ -15,18 +15,19 @@ class Monitor extends Component {
     let myChart2 = echarts.init(this.main2);
     myChart1.setOption(toJS(Options.Options.temp));
     myChart2.setOption(toJS(Options.Options.light));
-    setInterval(function () {
-      for (var i = 0; i < 1; i++) {
-          tempData.shift();
-          tempData.push(toJS(Options.randomData.value[1]).temp);
-          lightData.shift();
-          lightData.push(toJS(Options.randomData.value[1]).light);
-          time.shift();
-          time.push(toJS(Options.randomData.value[0]));
-      }
+    this.timer = setInterval(function () {
+      tempData.shift();
+      tempData.push(toJS(Options.randomData.value[1]).temp);
+      lightData.shift();
+      lightData.push(toJS(Options.randomData.value[1]).light);
+      time.shift();
+      time.push(toJS(Options.randomData.value[0]));
       myChart1.setOption(toJS(Options.Options.temp));
       myChart2.setOption(toJS(Options.Options.light));
     }, 1000);
+  }
+  componentWillUnmount(){
+    clearInterval(this.timer)
   }
   render(){
     return(

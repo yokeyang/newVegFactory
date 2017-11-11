@@ -21,8 +21,14 @@ class App extends Component {
       Breadcrumb: ['首页'],
     }
   }
+
+  toggle = () => {
+    this.setState({
+      collapsed: !this.state.collapsed,
+    });
+  }
+
   onCollapse = (collapsed) => {
-    console.log(collapsed);
     this.setState({
       collapsed,
       mode: collapsed ? 'vertical' : 'inline',
@@ -35,7 +41,7 @@ class App extends Component {
     return (
       <Router>
         <Layout style = {{height:'100vh'}}>
-          <Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
+          <Sider collapsedWidth={0} trigger = {null} collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse}>
             <div className="logo">蔬菜工厂</div>
             <Menu theme="dark" mode={this.state.mode} onClick = {this.onClick}>
               <Menu.Item key="实时监控">
@@ -83,7 +89,14 @@ class App extends Component {
             </Menu>
           </Sider>
           <Layout>
-            <Header className = "Avatar"><Avatar size = "large" icon="user" /></Header>
+            <Header className = "head">
+              <Icon
+                className="trigger"
+                type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
+                onClick={this.toggle}
+              />
+              <Avatar className = "Avatar" size = "large" icon="user" />
+            </Header>
             <Content style={{ margin: '0 16px' }}>
               <Breadcrumb style={{ margin: '12px 0' }}>
                 {this.state.Breadcrumb.reverse().map((item,index) => {

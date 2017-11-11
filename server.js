@@ -3,9 +3,11 @@ const express = require("express");
 const fs = require("fs");
 const moment = require('moment');
 const app = express();
+var server = require('http').Server(app)
+var io = require('socket.io')(server)
 
 app.set("port", process.env.PORT || 3001);
-
+server.listen(3002)
 if(process.env.NODE_ENV === "production") {
   app.use(express.static("vegfactory/build"));
 }
@@ -66,7 +68,7 @@ app.get("/api/history",(req,res) => {
   for(let i = Date.now();i > Date.now() - 30 * 86400000;i-=86400000){
     data.push({
       date:moment(i).format('YYYY-MM-DD'),
-      
+
     })
   }
   res.json({result:data})
@@ -91,6 +93,26 @@ app.get("/api/onekey",(req,res) => {
     lights:lights
   })
 });
+
 app.listen(app.get("port"),() =>{
   console.log(`Find the server at: http://localhost:${app.get("port")}/`);
 });
+
+io.on('connection',(socket)=>{
+  socket.on('light',(light)=>{
+    socket.emit('lightIntensity',{
+      red:parseInt(Math.random()*10)*10,
+      green:parseInt(Math.random()*10)*10,
+      blue:parseInt(Math.random()*10)*10,
+      purple:parseInt(Math.random()*10)*10
+    })
+  })
+  socket.on('getcharts',(req)=>{
+    socket.emit('charts',{
+      temp:10 + Math.random()*10,
+      light:10 + Math.random()*10,
+      co2:10 + Math.random()*10,
+      water:10 + Math.random()*10
+    })
+  })
+})
